@@ -1,0 +1,245 @@
+---
+description: "React TSX 파일 규칙 - 컴포넌트 및 타입 모범 사례"
+globs: ["**/*.tsx"]
+alwaysApply: false
+---
+
+# React TSX 규칙
+
+React TypeScript 컴포넌트 작성 시 적용되는 규칙입니다.
+
+---
+
+## 📋 컴포넌트 기본
+
+### 1. 함수 컴포넌트 사용
+
+```tsx
+// ✅ 좋음: 함수 컴포넌트
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+function Button({ label, onClick, disabled = false }: ButtonProps) {
+  return (
+    <button onClick={onClick} disabled={disabled}>
+      {label}
+    </button>
+  );
+}
+
+// ❌ 나쁨: 클래스 컴포넌트 (레거시)
+class Button extends React.Component<ButtonProps> { ... }
+```
+
+### 2. Props 타입 정의
+
+```tsx
+// ✅ 좋음: Interface로 Props 정의
+interface CardProps {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+  onClick?: () => void;
+}
+
+// ✅ 좋음: 기본값 설정
+function Card({ title, description = '', children, onClick }: CardProps) {
+  return (
+    <div onClick={onClick}>
+      <h2>{title}</h2>
+      {description && <p>{description}</p>}
+      {children}
+    </div>
+  );
+}
+```
+
+### 3. 이벤트 타입
+
+```tsx
+// 마우스 이벤트
+const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  e.preventDefault();
+};
+
+// 입력 이벤트
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setValue(e.target.value);
+};
+
+// 폼 이벤트
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+};
+```
+
+---
+
+## 📋 Hooks 규칙
+
+### 1. useState 타입
+
+```tsx
+// 타입 추론 가능한 경우
+const [count, setCount] = useState(0);
+const [name, setName] = useState('');
+
+// 타입 명시 필요한 경우
+const [user, setUser] = useState<User | null>(null);
+const [items, setItems] = useState<Item[]>([]);
+```
+
+### 2. useEffect
+
+```tsx
+// ✅ 좋음: 의존성 배열 명시
+useEffect(() => {
+  fetchUser(userId);
+}, [userId]);
+
+// ✅ 좋음: 클린업 함수
+useEffect(() => {
+  const subscription = subscribe(channel);
+  return () => subscription.unsubscribe();
+}, [channel]);
+
+// ❌ 나쁨: 빈 의존성 배열 남용
+useEffect(() => {
+  fetchUser(userId); // userId 변경 시 재실행 안 됨
+}, []);
+```
+
+### 3. 커스텀 Hooks
+
+```tsx
+// ✅ 좋음: 제네릭 커스텀 훅
+function useFetch<T>(url: string): {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+} {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading, error };
+}
+```
+
+---
+
+## 📋 성능 최적화
+
+### 1. 메모이제이션
+
+```tsx
+// useMemo: 계산 결과 캐싱
+const sortedItems = useMemo(
+  () => items.sort((a, b) => a.name.localeCompare(b.name)),
+  [items]
+);
+
+// useCallback: 함수 참조 유지
+const handleClick = useCallback(() => {
+  doSomething(id);
+}, [id]);
+
+// React.memo: 컴포넌트 메모이제이션
+const MemoizedCard = React.memo(Card);
+```
+
+### 2. 불필요한 리렌더링 방지
+
+```tsx
+// ✅ 좋음: 객체/배열 참조 유지
+const options = useMemo(() => ({ theme: 'dark' }), []);
+
+// ❌ 나쁨: 렌더링마다 새 객체 생성
+<Component options={{ theme: 'dark' }} />
+```
+
+---
+
+## 📋 패턴
+
+### 1. 조건부 렌더링
+
+```tsx
+// 간단한 조건
+{isLoading && <Spinner />}
+{error && <ErrorMessage error={error} />}
+{user ? <UserProfile user={user} /> : <LoginPrompt />}
+
+// 복잡한 조건
+function renderContent() {
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage error={error} />;
+  if (!data) return <EmptyState />;
+  return <DataList data={data} />;
+}
+```
+
+### 2. 리스트 렌더링
+
+```tsx
+// ✅ 좋음: 고유 key 사용
+{items.map((item) => (
+  <ListItem key={item.id} item={item} />
+))}
+
+// ❌ 나쁨: index를 key로 사용
+{items.map((item, index) => (
+  <ListItem key={index} item={item} />
+))}
+```
+
+### 3. Children 타입
+
+```tsx
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+interface ButtonProps {
+  children: string; // 텍스트만 허용
+}
+
+interface ListProps {
+  children: React.ReactElement<ItemProps>[]; // 특정 컴포넌트만
+}
+```
+
+---
+
+## 🚫 금지 사항
+
+1. **클래스 컴포넌트 사용 금지** (레거시 코드 제외)
+2. **any 타입 Props 금지**
+3. **index를 key로 사용 금지** (리스트 변경 시 문제)
+4. **useEffect 내 async 함수 직접 사용 금지**
+
+```tsx
+// ❌ 나쁨
+useEffect(async () => {
+  await fetchData();
+}, []);
+
+// ✅ 좋음
+useEffect(() => {
+  const fetch = async () => {
+    await fetchData();
+  };
+  fetch();
+}, []);
+```

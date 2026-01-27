@@ -1,0 +1,388 @@
+---
+description: "보안 감사 스킬 - 웹 애플리케이션 보안 체크리스트"
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+alwaysApply: false
+---
+
+# Security Audit Skill
+
+웹 애플리케이션 보안 감사 가이드입니다.
+
+---
+
+## 🔒 OWASP Top 10 체크리스트
+
+### 1. Injection (인젝션)
+
+```typescript
+// ❌ SQL Injection 취약
+const query = `SELECT * FROM users WHERE id = ${userId}`;
+
+// ✅ Parameterized Query
+const query = 'SELECT * FROM users WHERE id = ?';
+db.query(query, [userId]);
+
+// ❌ Command Injection 취약
+exec(`ls ${userInput}`);
+
+// ✅ 안전한 방법
+execFile('ls', [sanitizedPath]);
+```
+
+### 2. Broken Authentication (인증 취약점)
+
+```typescript
+// ❌ 취약한 세션 관리
+document.cookie = `session=${token}`;  // HttpOnly 없음
+
+// ✅ 안전한 쿠키 설정
+res.cookie('session', token, {
+  httpOnly: true,    // JavaScript 접근 차단
+  secure: true,      // HTTPS만 허용
+  sameSite: 'strict', // CSRF 방지
+  maxAge: 3600000    // 만료 시간
+});
+
+// ✅ 비밀번호 해싱
+import bcrypt from 'bcrypt';
+const hash = await bcrypt.hash(password, 12);
+const isValid = await bcrypt.compare(password, hash);
+```
+
+### 3. Sensitive Data Exposure (민감 데이터 노출)
+
+```typescript
+// ❌ 민감 데이터 로깅
+console.log('User password:', password);
+console.log('Credit card:', cardNumber);
+
+// ✅ 민감 데이터 마스킹
+console.log('User logged in:', email);
+console.log('Card:', maskCard(cardNumber)); // **** **** **** 1234
+
+// ❌ 클라이언트에 민감 데이터 전송
+return { user: { ...user, password: user.password } };
+
+// ✅ 필요한 데이터만 전송
+return { user: { id: user.id, email: user.email } };
+```
+
+### 4. XSS (Cross-Site Scripting)
+
+```typescript
+// ❌ XSS 취약
+element.innerHTML = userInput;
+<div dangerouslySetInnerHTML={{ __html: userInput }} />
+
+// ✅ 안전한 렌더링
+element.textContent = userInput;
+<div>{userInput}</div>  // React는 자동 이스케이프
+
+// ✅ 필요시 sanitize
+import DOMPurify from 'dompurify';
+const clean = DOMPurify.sanitize(userInput);
+```
+
+### 5. CSRF (Cross-Site Request Forgery)
+
+```typescript
+// ✅ CSRF 토큰 사용
+// 서버: 토큰 생성
+const csrfToken = crypto.randomUUID();
+req.session.csrfToken = csrfToken;
+
+// 클라이언트: 토큰 포함
+fetch('/api/transfer', {
+  method: 'POST',
+  headers: {
+    'X-CSRF-Token': csrfToken
+  },
+  body: JSON.stringify(data)
+});
+
+// 서버: 토큰 검증
+if (req.headers['x-csrf-token'] !== req.session.csrfToken) {
+  return res.status(403).json({ error: 'Invalid CSRF token' });
+}
+```
+
+---
+
+## 📋 입력 검증
+
+### 1. 서버 사이드 검증 (필수)
+
+```typescript
+import { z } from 'zod';
+
+// 스키마 정의
+const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8).max(100),
+  age: z.number().int().min(0).max(150),
+});
+
+// 검증
+function createUser(input: unknown) {
+  const validated = userSchema.parse(input);  // 실패시 에러
+  // 또는
+  const result = userSchema.safeParse(input);
+  if (!result.success) {
+    return { error: result.error.issues };
+  }
+  return createUserInDB(result.data);
+}
+```
+
+### 2. 화이트리스트 방식
+
+```typescript
+// ❌ 블랙리스트 (우회 가능)
+if (input.includes('<script>')) reject();
+
+// ✅ 화이트리스트 (허용된 것만)
+const allowedRoles = ['user', 'admin', 'moderator'];
+if (!allowedRoles.includes(role)) {
+  throw new Error('Invalid role');
+}
+
+// ✅ 정규식 화이트리스트
+const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+if (!usernameRegex.test(username)) {
+  throw new Error('Invalid username format');
+}
+```
+
+---
+
+## 📋 인증 & 권한
+
+### 1. JWT 보안
+
+```typescript
+// ❌ 취약한 JWT
+const token = jwt.sign(payload, 'simple-secret');
+
+// ✅ 안전한 JWT
+const token = jwt.sign(payload, process.env.JWT_SECRET, {
+  algorithm: 'RS256',    // 비대칭 알고리즘
+  expiresIn: '15m',      // 짧은 만료
+  issuer: 'my-app',
+  audience: 'my-app-users'
+});
+
+// ✅ 토큰 검증
+try {
+  const decoded = jwt.verify(token, publicKey, {
+    algorithms: ['RS256'],
+    issuer: 'my-app'
+  });
+} catch (error) {
+  // 만료, 위조 등
+}
+```
+
+### 2. 권한 검사
+
+```typescript
+// ❌ 권한 검사 누락
+app.delete('/api/posts/:id', async (req, res) => {
+  await deletePost(req.params.id);  // 누구나 삭제 가능!
+});
+
+// ✅ 권한 검사 포함
+app.delete('/api/posts/:id', authenticate, async (req, res) => {
+  const post = await getPost(req.params.id);
+  
+  // 소유자 또는 관리자만 삭제 가능
+  if (post.authorId !== req.user.id && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  
+  await deletePost(req.params.id);
+});
+```
+
+---
+
+## 📋 API 보안
+
+### 1. Rate Limiting
+
+```typescript
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15분
+  max: 100,                   // 요청 제한
+  message: 'Too many requests',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/', limiter);
+
+// 로그인은 더 엄격하게
+const loginLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,  // 1시간
+  max: 5,                     // 5회 시도
+  message: 'Too many login attempts'
+});
+
+app.post('/api/login', loginLimiter, loginHandler);
+```
+
+### 2. CORS 설정
+
+```typescript
+import cors from 'cors';
+
+// ❌ 너무 개방적
+app.use(cors());  // 모든 origin 허용
+
+// ✅ 제한적 CORS
+app.use(cors({
+  origin: ['https://myapp.com', 'https://admin.myapp.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400  // preflight 캐시
+}));
+```
+
+### 3. 보안 헤더
+
+```typescript
+import helmet from 'helmet';
+
+app.use(helmet());  // 기본 보안 헤더
+
+// 또는 개별 설정
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    styleSrc: ["'self'", "'unsafe-inline'"],
+    imgSrc: ["'self'", "data:", "https:"],
+  }
+}));
+```
+
+---
+
+## 📋 데이터베이스 보안
+
+### 1. 최소 권한 원칙
+
+```sql
+-- ❌ 모든 권한
+GRANT ALL PRIVILEGES ON database.* TO 'app_user'@'localhost';
+
+-- ✅ 필요한 권한만
+GRANT SELECT, INSERT, UPDATE ON database.users TO 'app_user'@'localhost';
+GRANT SELECT ON database.products TO 'app_user'@'localhost';
+-- DELETE는 별도 관리자 계정으로
+```
+
+### 2. 연결 보안
+
+```typescript
+// ✅ SSL 연결
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: true,
+    ca: fs.readFileSync('/path/to/ca-cert.pem')
+  }
+});
+```
+
+---
+
+## 📋 환경 변수 & 시크릿
+
+### 1. 시크릿 관리
+
+```typescript
+// ❌ 하드코딩
+const API_KEY = 'sk-1234567890abcdef';
+const DB_PASSWORD = 'password123';
+
+// ✅ 환경 변수
+const API_KEY = process.env.API_KEY;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+
+// ✅ 시크릿 존재 검증
+const requiredEnvVars = ['API_KEY', 'DB_PASSWORD', 'JWT_SECRET'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+}
+```
+
+### 2. .gitignore 필수
+
+```gitignore
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 시크릿
+*.pem
+*.key
+secrets/
+```
+
+---
+
+## 📋 보안 체크리스트
+
+```
+인증/권한:
+[ ] 비밀번호 해싱 (bcrypt/argon2)?
+[ ] 안전한 세션 관리?
+[ ] JWT 적절한 만료 시간?
+[ ] 모든 엔드포인트 권한 검사?
+
+입력 검증:
+[ ] 서버 사이드 검증?
+[ ] SQL Injection 방지?
+[ ] XSS 방지?
+
+API:
+[ ] Rate limiting?
+[ ] CORS 제한?
+[ ] 보안 헤더 (helmet)?
+[ ] HTTPS 강제?
+
+데이터:
+[ ] 민감 데이터 암호화?
+[ ] 로그에 민감 정보 없음?
+[ ] 환경 변수로 시크릿 관리?
+[ ] .gitignore 설정?
+
+인프라:
+[ ] 최소 권한 원칙?
+[ ] DB SSL 연결?
+[ ] 의존성 취약점 스캔?
+```
+
+---
+
+## 🛠️ 보안 도구
+
+```bash
+# npm 취약점 검사
+npm audit
+npm audit fix
+
+# Snyk (더 정밀한 검사)
+npx snyk test
+
+# 정적 분석
+npx eslint --ext .ts,.tsx . --rule 'security/*'
+```

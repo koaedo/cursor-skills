@@ -1,0 +1,47 @@
+# ============================================================
+# Cursor Skills - Git Ignore
+# ============================================================
+
+# OS 생성 파일
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 에디터/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 백업 파일
+_backup_*/
+*.bak
+*.backup
+
+# 로그 (선택적 - 필요시 주석 해제)
+# !AGENT_System/
+
+# 임시 파일
+*.tmp
+*.temp
+*.log
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# Node.js (만약 사용한다면)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (만약 사용한다면)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/

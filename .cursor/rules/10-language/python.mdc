@@ -1,0 +1,291 @@
+---
+description: "Python 파일 규칙 - PEP 8 및 모범 사례"
+globs: ["**/*.py"]
+alwaysApply: false
+---
+
+# Python 규칙
+
+Python 파일 작성 시 적용되는 규칙입니다.
+
+---
+
+## 📋 스타일 (PEP 8)
+
+### 1. 네이밍 규칙
+
+```python
+# 변수, 함수: snake_case
+user_name = "John"
+def get_user_by_id(user_id): ...
+
+# 클래스: PascalCase
+class UserService:
+    pass
+
+# 상수: UPPER_SNAKE_CASE
+MAX_RETRIES = 3
+API_BASE_URL = "https://api.example.com"
+
+# Private: 언더스코어 접두사
+_internal_cache = {}
+def _helper_function(): ...
+
+# Dunder (Magic): 더블 언더스코어
+def __init__(self): ...
+def __str__(self): ...
+```
+
+### 2. 들여쓰기 및 줄 길이
+
+```python
+# 4칸 들여쓰기
+def function():
+    if condition:
+        do_something()
+
+# 줄 길이: 79자 (최대 99자)
+# 긴 줄 나누기
+result = some_function(
+    argument_one,
+    argument_two,
+    argument_three,
+)
+```
+
+---
+
+## 📋 타입 힌트 (Python 3.9+)
+
+### 1. 기본 타입
+
+```python
+# ✅ 좋음: 타입 힌트 사용
+def greet(name: str, times: int = 1) -> str:
+    return f"Hello, {name}!" * times
+
+def get_user(user_id: int) -> dict | None:
+    return users.get(user_id)
+
+# 컬렉션 타입
+from typing import Optional
+
+def process_items(items: list[str]) -> dict[str, int]:
+    return {item: len(item) for item in items}
+
+def find_user(user_id: int) -> Optional[User]:
+    return users.get(user_id)
+```
+
+### 2. 복잡한 타입
+
+```python
+from typing import Callable, TypeVar, Generic
+
+# 콜백 함수 타입
+Handler = Callable[[str, int], bool]
+
+# 제네릭
+T = TypeVar('T')
+
+class Repository(Generic[T]):
+    def get(self, id: int) -> T | None: ...
+    def save(self, item: T) -> T: ...
+```
+
+---
+
+## 📋 함수 및 클래스
+
+### 1. 함수 설계
+
+```python
+# ✅ 좋음: 작은 단일 책임 함수
+def validate_email(email: str) -> bool:
+    """이메일 형식 검증."""
+    import re
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return bool(re.match(pattern, email))
+
+def send_email(to: str, subject: str, body: str) -> bool:
+    """이메일 전송."""
+    if not validate_email(to):
+        raise ValueError(f"Invalid email: {to}")
+    # 전송 로직
+    return True
+
+# ❌ 나쁨: 여러 책임을 가진 큰 함수
+def process_and_send_email(to, subject, body):
+    # 검증도 하고
+    # 전송도 하고
+    # 로깅도 하고...
+```
+
+### 2. 클래스 설계
+
+```python
+# ✅ 좋음: dataclass 활용
+from dataclasses import dataclass, field
+
+@dataclass
+class User:
+    id: int
+    name: str
+    email: str
+    tags: list[str] = field(default_factory=list)
+
+# ✅ 좋음: 프로퍼티 사용
+class Circle:
+    def __init__(self, radius: float):
+        self._radius = radius
+
+    @property
+    def radius(self) -> float:
+        return self._radius
+
+    @property
+    def area(self) -> float:
+        import math
+        return math.pi * self._radius ** 2
+```
+
+---
+
+## 📋 에러 처리
+
+### 1. 예외 처리
+
+```python
+# ✅ 좋음: 구체적인 예외 처리
+try:
+    result = fetch_data(url)
+except ConnectionError as e:
+    logger.error(f"Connection failed: {e}")
+    raise
+except TimeoutError:
+    logger.warning("Request timed out, retrying...")
+    result = fetch_data(url, timeout=60)
+
+# ❌ 나쁨: 모든 예외 무시
+try:
+    result = fetch_data(url)
+except:
+    pass
+```
+
+### 2. 커스텀 예외
+
+```python
+# ✅ 좋음: 도메인 특화 예외
+class ValidationError(Exception):
+    """검증 실패 예외."""
+    pass
+
+class UserNotFoundError(Exception):
+    """사용자를 찾을 수 없음."""
+    def __init__(self, user_id: int):
+        self.user_id = user_id
+        super().__init__(f"User not found: {user_id}")
+```
+
+---
+
+## 📋 모듈 및 임포트
+
+### 1. 임포트 순서
+
+```python
+# 1. 표준 라이브러리
+import os
+import sys
+from datetime import datetime
+
+# 2. 서드파티
+import requests
+from fastapi import FastAPI
+
+# 3. 로컬
+from .models import User
+from .utils import validate_email
+```
+
+### 2. 임포트 스타일
+
+```python
+# ✅ 좋음: 명시적 임포트
+from typing import Optional, List
+from collections import defaultdict
+
+# ⚠️ 주의: 와일드카드 임포트 지양
+# from module import *
+
+# ✅ 좋음: 긴 모듈명 별칭
+import numpy as np
+import pandas as pd
+```
+
+---
+
+## 📋 모범 사례
+
+### 1. 컨텍스트 매니저
+
+```python
+# ✅ 좋음: with 문 사용
+with open('file.txt', 'r') as f:
+    content = f.read()
+
+# 커스텀 컨텍스트 매니저
+from contextlib import contextmanager
+
+@contextmanager
+def timer(name: str):
+    import time
+    start = time.time()
+    yield
+    print(f"{name}: {time.time() - start:.2f}s")
+
+with timer("Processing"):
+    process_data()
+```
+
+### 2. 리스트 컴프리헨션
+
+```python
+# ✅ 좋음: 간단한 변환
+squares = [x ** 2 for x in range(10)]
+even_squares = [x ** 2 for x in range(10) if x % 2 == 0]
+
+# ⚠️ 복잡하면 일반 루프 사용
+# ❌ 나쁨
+result = [transform(x) for x in items if validate(x) and check(x)]
+
+# ✅ 좋음
+result = []
+for x in items:
+    if validate(x) and check(x):
+        result.append(transform(x))
+```
+
+---
+
+## 🚫 금지 사항
+
+1. **`except:` (bare except) 금지** - 구체적 예외 명시
+2. **`from module import *` 금지** - 명시적 임포트
+3. **가변 기본값 금지** - `def f(items=[])` 대신 `items=None`
+4. **전역 변수 남용 금지**
+
+```python
+# ❌ 나쁨: 가변 기본값
+def add_item(item, items=[]):
+    items.append(item)
+    return items
+
+# ✅ 좋음
+def add_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+```

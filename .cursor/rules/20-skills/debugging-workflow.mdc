@@ -1,0 +1,405 @@
+---
+description: "디버깅 워크플로우 스킬 - 체계적인 버그 해결 가이드"
+alwaysApply: false
+---
+
+# Debugging Workflow Skill
+
+체계적인 디버깅 워크플로우 가이드입니다.
+
+---
+
+## 🔍 디버깅 5단계 프로세스
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│                    디버깅 5단계 프로세스                     │
+│                                                             │
+│  1️⃣ 재현 → 2️⃣ 격리 → 3️⃣ 분석 → 4️⃣ 수정 → 5️⃣ 검증         │
+│                                                             │
+│  ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐      │
+│  │ 재현 │ → │ 격리 │ → │ 분석 │ → │ 수정 │ → │ 검증 │      │
+│  └──────┘   └──────┘   └──────┘   └──────┘   └──────┘      │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📋 Step 1: 재현 (Reproduce)
+
+### 원칙
+
+```
+버그를 100% 재현할 수 있어야 디버깅 시작
+재현 불가능한 버그는 로그 수집부터
+```
+
+### 체크리스트
+
+```markdown
+[ ] 버그 발생 조건 기록
+[ ] 재현 단계 문서화
+[ ] 환경 정보 수집 (OS, 브라우저, 버전)
+[ ] 입력 데이터 저장
+[ ] 스크린샷/비디오 캡처
+```
+
+### 재현 템플릿
+
+```markdown
+## 버그 재현 정보
+
+**환경:**
+- OS: Windows 11
+- Browser: Chrome 120
+- App Version: 1.2.3
+
+**재현 단계:**
+1. 로그인 페이지 접속
+2. 이메일 입력: test@example.com
+3. 비밀번호 입력: (빈 값)
+4. 로그인 버튼 클릭
+
+**예상 결과:** 비밀번호 필수 오류 표시
+**실제 결과:** 페이지 크래시
+```
+
+---
+
+## 📋 Step 2: 격리 (Isolate)
+
+### 원칙
+
+```
+문제 범위를 좁혀서 정확한 위치 파악
+이진 탐색으로 효율적 격리
+```
+
+### 격리 기법
+
+#### 1. 이진 탐색 (Binary Search)
+
+```typescript
+// 코드의 절반씩 주석 처리하며 범위 좁히기
+
+function processData(data) {
+  // === 전반부 ===
+  const validated = validate(data);
+  const transformed = transform(validated);
+  
+  // === 후반부 (여기서 문제 발생?) ===
+  const enriched = enrich(transformed);
+  const result = format(enriched);
+  
+  return result;
+}
+```
+
+#### 2. 컴포넌트 격리
+
+```typescript
+// 문제 컴포넌트만 독립 테스트
+// 의존성 제거하고 단독 실행
+
+// ❌ 복잡한 의존성
+<App>
+  <Layout>
+    <Sidebar>
+      <BuggyComponent data={complexData} />
+    </Sidebar>
+  </Layout>
+</App>
+
+// ✅ 격리된 테스트
+<BuggyComponent data={simpleTestData} />
+```
+
+#### 3. 로그 포인트
+
+```typescript
+function suspiciousFunction(input) {
+  console.log('🔍 [1] input:', JSON.stringify(input));
+  
+  const step1 = processStep1(input);
+  console.log('🔍 [2] after step1:', JSON.stringify(step1));
+  
+  const step2 = processStep2(step1);
+  console.log('🔍 [3] after step2:', JSON.stringify(step2));
+  
+  return step2;
+}
+```
+
+---
+
+## 📋 Step 3: 분석 (Analyze)
+
+### 분석 도구
+
+#### 1. 브라우저 DevTools
+
+```javascript
+// Console
+console.log()     // 값 출력
+console.table()   // 배열/객체 테이블 표시
+console.trace()   // 호출 스택 출력
+console.time()    // 성능 측정
+
+// Debugger
+debugger;         // 브레이크포인트 설정
+
+// Network 탭
+// - 요청/응답 확인
+// - 타이밍 분석
+// - 헤더 검사
+```
+
+#### 2. React DevTools
+
+```javascript
+// Components 탭
+// - Props/State 확인
+// - 컴포넌트 트리 탐색
+
+// Profiler 탭
+// - 렌더링 성능 분석
+// - 불필요한 리렌더링 감지
+```
+
+#### 3. 에러 스택 분석
+
+```
+Error: Cannot read property 'name' of undefined
+    at getUserName (user.js:15:23)        ← 직접 원인
+    at renderProfile (profile.js:42:10)   ← 호출자
+    at App.render (app.js:78:5)           ← 상위 호출자
+```
+
+### 일반적인 버그 패턴
+
+```typescript
+// 1. Null/Undefined 접근
+user.profile.name  // user 또는 profile이 undefined
+
+// 해결: Optional chaining
+user?.profile?.name
+
+// 2. 비동기 타이밍
+setData(newData);
+console.log(data);  // 아직 이전 값!
+
+// 해결: useEffect 또는 await
+useEffect(() => {
+  console.log(data);  // 업데이트 후 실행
+}, [data]);
+
+// 3. 클로저 문제
+for (var i = 0; i < 5; i++) {
+  setTimeout(() => console.log(i), 100);  // 모두 5 출력
+}
+
+// 해결: let 또는 IIFE
+for (let i = 0; i < 5; i++) {
+  setTimeout(() => console.log(i), 100);  // 0,1,2,3,4
+}
+
+// 4. 참조 vs 복사
+const copy = original;  // 같은 참조!
+copy.value = 'changed';  // original도 변경됨
+
+// 해결: 깊은 복사
+const copy = JSON.parse(JSON.stringify(original));
+const copy = structuredClone(original);
+```
+
+---
+
+## 📋 Step 4: 수정 (Fix)
+
+### 원칙
+
+```
+1. 최소한의 변경으로 수정
+2. 근본 원인 해결 (증상만 숨기지 않기)
+3. 사이드 이펙트 고려
+```
+
+### 수정 패턴
+
+#### 1. 방어적 코딩
+
+```typescript
+// Before: 취약한 코드
+function getUsername(user) {
+  return user.profile.name;
+}
+
+// After: 방어적 코드
+function getUsername(user) {
+  if (!user?.profile?.name) {
+    return 'Unknown';
+  }
+  return user.profile.name;
+}
+```
+
+#### 2. 타입 가드
+
+```typescript
+// Before: 런타임 에러 가능
+function process(input: unknown) {
+  return input.toString();
+}
+
+// After: 타입 안전
+function process(input: unknown): string {
+  if (typeof input === 'string') return input;
+  if (typeof input === 'number') return String(input);
+  if (input === null || input === undefined) return '';
+  return JSON.stringify(input);
+}
+```
+
+#### 3. 에러 바운더리
+
+```typescript
+// React 에러 바운더리
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+  
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  
+  componentDidCatch(error, errorInfo) {
+    logErrorToService(error, errorInfo);
+  }
+  
+  render() {
+    if (this.state.hasError) {
+      return <ErrorFallback />;
+    }
+    return this.props.children;
+  }
+}
+```
+
+---
+
+## 📋 Step 5: 검증 (Verify)
+
+### 체크리스트
+
+```markdown
+[ ] 원래 버그가 수정되었는가?
+[ ] 재현 단계로 다시 테스트
+[ ] 관련 기능에 사이드 이펙트 없는가?
+[ ] 엣지 케이스 테스트
+[ ] 회귀 테스트 추가
+```
+
+### 회귀 테스트 작성
+
+```typescript
+// 버그 재현 테스트 → 수정 후 통과해야 함
+describe('Bug #123: Login crash with empty password', () => {
+  it('should show error message instead of crash', () => {
+    render(<LoginForm />);
+    
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'test@example.com' }
+    });
+    // 비밀번호는 빈 값으로 두고
+    fireEvent.click(screen.getByText('Login'));
+    
+    // 크래시 대신 에러 메시지 표시
+    expect(screen.getByText('Password is required')).toBeInTheDocument();
+  });
+});
+```
+
+---
+
+## 📋 디버깅 도구 치트시트
+
+### Console API
+
+```javascript
+// 기본
+console.log('일반 로그');
+console.info('정보');
+console.warn('경고');
+console.error('에러');
+
+// 고급
+console.table([{a:1}, {a:2}]);     // 테이블 표시
+console.group('그룹');             // 그룹 시작
+console.groupEnd();                // 그룹 끝
+console.time('타이머');            // 시간 측정 시작
+console.timeEnd('타이머');         // 시간 측정 끝
+console.assert(false, '실패!');    // 조건부 로그
+console.count('호출 횟수');        // 호출 카운트
+console.dir(object);               // 객체 상세 보기
+```
+
+### VS Code 디버거
+
+```json
+// .vscode/launch.json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug",
+      "program": "${workspaceFolder}/src/index.js",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
+```
+
+### 브라우저 브레이크포인트
+
+```javascript
+// 코드에서 직접
+debugger;
+
+// 조건부 브레이크포인트 (DevTools에서 설정)
+// 조건: user.id === 123
+```
+
+---
+
+## 🚫 디버깅 안티패턴
+
+```
+❌ 추측으로 수정하기 (확인 없이)
+❌ 증상만 숨기기 (try-catch로 무시)
+❌ 여러 곳 동시 수정 (원인 파악 어려움)
+❌ 로그 남기고 삭제 안 함
+❌ 테스트 없이 배포
+```
+
+---
+
+## 📋 디버깅 체크리스트
+
+```
+시작 전:
+[ ] 버그 재현 가능?
+[ ] 환경 정보 수집?
+
+분석 중:
+[ ] 로그 추가했나?
+[ ] 범위 격리했나?
+[ ] 스택 트레이스 확인?
+
+수정 후:
+[ ] 원래 버그 해결?
+[ ] 사이드 이펙트 없나?
+[ ] 회귀 테스트 추가?
+```

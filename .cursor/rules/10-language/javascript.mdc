@@ -1,0 +1,196 @@
+---
+description: "JavaScript 파일 규칙 - ES6+ 모범 사례"
+globs: ["**/*.js", "**/*.mjs", "**/*.cjs"]
+alwaysApply: false
+---
+
+# JavaScript 규칙
+
+JavaScript 파일 작성 시 적용되는 규칙입니다.
+
+---
+
+## 📋 기본 원칙
+
+### 1. ES6+ 문법 사용
+
+```javascript
+// ✅ 좋음: ES6+
+const name = 'John';
+const greet = (name) => `Hello, ${name}!`;
+const { id, name } = user;
+const merged = { ...obj1, ...obj2 };
+
+// ❌ 나쁨: ES5
+var name = 'John';
+function greet(name) { return 'Hello, ' + name + '!'; }
+```
+
+### 2. const 우선, let 필요시만
+
+```javascript
+// ✅ 좋음
+const PI = 3.14159;
+const users = []; // 배열 자체는 불변, 내용은 변경 가능
+let count = 0;    // 재할당 필요한 경우만
+
+// ❌ 나쁨
+var x = 1;        // var 사용 금지
+let constant = 5; // 재할당 안 하면 const 사용
+```
+
+---
+
+## 📋 함수
+
+### 1. 화살표 함수 vs 일반 함수
+
+```javascript
+// 화살표 함수: 콜백, 짧은 함수
+const double = (x) => x * 2;
+array.map((item) => item.id);
+
+// 일반 함수: this 바인딩 필요, 생성자
+function Person(name) {
+  this.name = name;
+}
+```
+
+### 2. 기본 매개변수
+
+```javascript
+// ✅ 좋음
+function greet(name = 'Guest', greeting = 'Hello') {
+  return `${greeting}, ${name}!`;
+}
+
+// ❌ 나쁨
+function greet(name, greeting) {
+  name = name || 'Guest';
+  greeting = greeting || 'Hello';
+  return greeting + ', ' + name + '!';
+}
+```
+
+### 3. Rest/Spread 연산자
+
+```javascript
+// Rest: 나머지 매개변수
+function sum(...numbers) {
+  return numbers.reduce((a, b) => a + b, 0);
+}
+
+// Spread: 배열/객체 펼치기
+const merged = [...arr1, ...arr2];
+const updated = { ...user, name: 'New Name' };
+```
+
+---
+
+## 📋 비동기 처리
+
+### 1. async/await 우선
+
+```javascript
+// ✅ 좋음: async/await
+async function fetchUser(id) {
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw error;
+  }
+}
+
+// ⚠️ 필요시: Promise 체인
+fetchUser(id)
+  .then((user) => processUser(user))
+  .catch((error) => handleError(error));
+```
+
+### 2. 병렬 처리
+
+```javascript
+// ✅ 좋음: 병렬 실행
+const [users, posts] = await Promise.all([
+  fetchUsers(),
+  fetchPosts()
+]);
+
+// ❌ 나쁨: 순차 실행 (불필요한 대기)
+const users = await fetchUsers();
+const posts = await fetchPosts();
+```
+
+---
+
+## 📋 배열 메서드
+
+### 1. 함수형 메서드 선호
+
+```javascript
+// ✅ 좋음: 함수형
+const activeUsers = users.filter((u) => u.active);
+const names = users.map((u) => u.name);
+const total = numbers.reduce((sum, n) => sum + n, 0);
+
+// ❌ 나쁨: for 루프
+const activeUsers = [];
+for (let i = 0; i < users.length; i++) {
+  if (users[i].active) activeUsers.push(users[i]);
+}
+```
+
+### 2. 적절한 메서드 선택
+
+```javascript
+// 존재 여부: some / every
+const hasAdmin = users.some((u) => u.role === 'admin');
+const allActive = users.every((u) => u.active);
+
+// 찾기: find / findIndex
+const admin = users.find((u) => u.role === 'admin');
+const index = users.findIndex((u) => u.id === targetId);
+
+// 포함 여부: includes
+const hasApple = fruits.includes('apple');
+```
+
+---
+
+## 📋 모듈
+
+### 1. ES Modules 사용
+
+```javascript
+// ✅ 좋음: ES Modules
+import { fetchUser } from './api.js';
+export const API_URL = '/api';
+export default function App() { ... }
+
+// ❌ 나쁨: CommonJS (Node.js 레거시)
+const { fetchUser } = require('./api');
+module.exports = { API_URL };
+```
+
+### 2. Named Export 선호
+
+```javascript
+// ✅ 좋음: Named exports (트리쉐이킹 가능)
+export const fetchUser = () => { ... };
+export const fetchPosts = () => { ... };
+
+// ⚠️ 주의: Default export (하나의 주요 export에만)
+export default function App() { ... }
+```
+
+---
+
+## 🚫 금지 사항
+
+1. **`var` 사용 금지** (const/let 사용)
+2. **`==` 사용 금지** (`===` 사용)
+3. **`eval()` 사용 금지** (보안 위험)
+4. **`with` 문 사용 금지**
+5. **콜백 지옥 금지** (async/await 사용)

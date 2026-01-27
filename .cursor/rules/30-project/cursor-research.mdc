@@ -1,0 +1,105 @@
+---
+description: "Cursor AI 최적화 연구 프로젝트 전용 규칙"
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# Cursor AI 최적화 연구 프로젝트 규칙
+
+## 🎯 프로젝트 목표
+
+Cursor AI를 더 효과적으로 활용하기 위한 최적의 룰스 연구
+- Vercel Skills, Claude Code, Gemini CLI 비교 분석
+- 하이브리드 시스템 구축
+- 최적화된 Cursor Rules 세트 생성
+
+---
+
+## 📁 프로젝트 구조
+
+```
+skills/
+├── .cursor/rules/           # 새로운 MDC 규칙
+├── .cursorrules             # 기존 유저룰스 (유지)
+├── _COMMAND_LIBRARY/        # 커맨드 라이브러리
+├── !AGENT_System/           # 자동 로그/보고서
+├── 룰스모음/                # 연구 자료
+│   └── 20251129_cursor-rules/
+└── cursor_everything_claude_code.md
+```
+
+---
+
+## 🔬 연구 소스
+
+### 최고 우선순위
+| 소스 | 내용 | 상태 |
+|------|------|------|
+| Vercel react-best-practices | 57개 규칙, 8개 카테고리 | 연구중 |
+| Claude Code CLAUDE.md | .claude/rules/, paths 규칙 | 연구중 |
+| Gemini CLI GEMINI.md | 세션관리, 압축, 계층구조 | 연구중 |
+| 기존 유저룰스 | 에이전트 팀, 자동 로그 | 분석완료 |
+
+### 높은 우선순위
+- awesome-cursorrules (커뮤니티)
+- Windsurf .windsurfrules
+- GitHub Copilot instructions
+
+---
+
+## 👥 에이전트 팀
+
+이 프로젝트는 5개 전문 팀으로 운영됩니다:
+
+1. **Research Team** - 스킬 수집 및 조사
+2. **Analysis Team** - 비교 분석 및 평가
+3. **Integration Team** - 하이브리드 시스템 설계
+4. **Testing Team** - 실제 적용 테스트
+5. **Red Team** - 비판적 검토 (VETO 권한)
+
+---
+
+## 📋 연구 규칙
+
+### 검증 데이터 기반 작업
+- ❌ 추측/뇌피셜 금지
+- ✅ MCP (Exa Search, Context7) 활용 필수
+- ✅ 검색 결과 기반 분석
+
+### 파일 생성 규칙
+- 모든 보고서: `!AGENT_System/YYYYMMDD_HHMMSS_보고자_보고명.MD`
+- 분석 문서: 파일 링크 종속관계 필수 포함
+
+### 진행 기록
+- 주요 작업 완료 시 LOG 자동 생성
+- 세션 저장으로 연속성 유지
+
+---
+
+## 🎯 현재 단계
+
+**3단계: 세부 룰스 구축** (진행중)
+
+### 완료
+- ✅ 1단계: 범주와 방향성 파악
+- ✅ 2단계: 에이전트 팀 설정
+- ✅ Analysis Team 종합 분석
+- ✅ Integration Team 설계서 작성
+- ✅ 핵심 MDC 규칙 생성
+
+### 진행중
+- 🔄 Testing Team 검증 대기
+- 🔄 Red Team 검토 대기
+
+### 예정
+- ⏳ Vercel Skills 상세 분석
+- ⏳ 실제 프로젝트 적용 테스트
+- ⏳ 최종 룰스 세트 확정
+
+---
+
+## 📎 관련 파일
+
+- [AGENT_Teams.mdc](../../.cursor/rules/AGENT_Teams.mdc) - 팀 설정
+- [종합비교분석.MD](../../!AGENT_System/20260126_151019_analysis_종합비교분석.MD)
+- [하이브리드시스템설계.MD](../../!AGENT_System/20260126_161011_integration_하이브리드시스템설계.MD)

@@ -1,0 +1,137 @@
+---
+description: "TypeScript 파일 규칙 - 타입 안전성 및 모범 사례"
+globs: ["**/*.ts"]
+alwaysApply: false
+---
+
+# TypeScript 규칙
+
+TypeScript 파일 작성 시 적용되는 규칙입니다.
+
+---
+
+## 📋 타입 안전성
+
+### 1. 엄격한 타입 사용
+
+```typescript
+// ✅ 좋음: 명시적 타입
+function getUser(id: string): User | null {
+  return users.find(u => u.id === id) ?? null;
+}
+
+// ❌ 나쁨: any 사용
+function getUser(id: any): any {
+  return users.find(u => u.id === id);
+}
+```
+
+### 2. any 사용 금지
+
+- `any` 대신 `unknown` 사용
+- 불가피한 경우 `// @ts-expect-error` 주석과 함께 이유 설명
+- 외부 라이브러리 타입 없으면 `declare module` 작성
+
+### 3. 널 안전성
+
+```typescript
+// ✅ 좋음: Optional chaining + Nullish coalescing
+const name = user?.profile?.name ?? 'Anonymous';
+
+// ❌ 나쁨: 타입 단언
+const name = (user as User).profile.name;
+```
+
+---
+
+## 📋 코드 구조
+
+### 1. Interface vs Type
+
+```typescript
+// Interface: 객체 형태, 확장 가능
+interface User {
+  id: string;
+  name: string;
+}
+
+// Type: 유니온, 튜플, 복잡한 타입
+type Status = 'active' | 'inactive' | 'pending';
+type Coordinate = [number, number];
+```
+
+### 2. 제네릭 활용
+
+```typescript
+// ✅ 좋음: 재사용 가능한 제네릭
+function first<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+// ❌ 나쁨: 타입별 중복 함수
+function firstString(arr: string[]): string | undefined { ... }
+function firstNumber(arr: number[]): number | undefined { ... }
+```
+
+### 3. Enum vs Union
+
+```typescript
+// ✅ 권장: Union (트리쉐이킹 가능)
+type Direction = 'north' | 'south' | 'east' | 'west';
+
+// ⚠️ 주의: Enum (번들 크기 증가)
+enum Direction {
+  North = 'north',
+  South = 'south',
+}
+```
+
+---
+
+## 📋 모범 사례
+
+### 1. 불변성 선호
+
+```typescript
+// ✅ 좋음: readonly
+interface Config {
+  readonly apiUrl: string;
+  readonly timeout: number;
+}
+
+// ✅ 좋음: as const
+const STATUSES = ['pending', 'active', 'done'] as const;
+type Status = typeof STATUSES[number];
+```
+
+### 2. 유틸리티 타입 활용
+
+```typescript
+// Partial, Required, Pick, Omit, Record
+type UpdateUser = Partial<User>;
+type UserPreview = Pick<User, 'id' | 'name'>;
+type UserWithoutPassword = Omit<User, 'password'>;
+```
+
+### 3. 타입 가드
+
+```typescript
+// 타입 가드 함수
+function isUser(value: unknown): value is User {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    'name' in value
+  );
+}
+```
+
+---
+
+## 🚫 금지 사항
+
+1. **`any` 타입 사용 금지** (불가피한 경우 주석으로 이유 설명)
+2. **`@ts-ignore` 사용 금지** (`@ts-expect-error` 사용)
+3. **타입 단언 남용 금지** (`as Type`보다 타입 가드 사용)
+4. **`!` (non-null assertion) 남용 금지**
