@@ -193,6 +193,59 @@ npx -y @anthropic/mcp-notion   # 노션 연동 (NOTION_API_KEY)
 
 ---
 
+## 📚 리서치 출처 및 기능 정리
+
+### 기존 유저룰스에서 가져온 기능
+
+| 기존 파일 | 변환된 MDC | 주요 기능 |
+|-----------|------------|----------|
+| `00_MASTER_RULES.md` | `master-rules.mdc` | 사용자 복종 원칙, 검증 데이터 기반 작업, 환각 방지, MCP 활용 |
+| `01_FILE_FOLDER_MANAGEMENT.md` | `file-management.mdc` | 파일명/폴더명 규칙 (번호+시각), 메타태그, 버전관리 |
+| `03_PROJECT_OPERATIONS.md` | `session-management.mdc` | 프로젝트 운영 관리, 모니터링, 상태 관리 |
+| `05_AGENT_ROLES.md` | `agent-roles.mdc` | 상급 에이전트 팀 (총괄/PM/관리자/감사), 슈퍼바이저 시스템 |
+| `06_FILE_LINK_MANAGEMENT.md` | `context-compress.mdc` | 파일 링크 종속관계, 맥락관리, 버전관리 |
+
+### 학술 연구 기반 리서치
+
+| 리서치 출처 | 적용된 기능 | 적용 위치 |
+|------------|-----------|----------|
+| **Belbin Team Roles** (1981) | 9가지 팀 역할 이론 | `AGENT_Teams.mdc`, `agent-teams.md` |
+| **Adversarial Collaboration** (Kahneman) | 논쟁 기반 협업, 다양한 관점 충돌 | `agent-teams.md` |
+| **Red Team/Blue Team** (미국 국방부) | 적대적 검증, 취약점 발견 | `agent-external_evaluation.md` |
+| **NASA Mission Control** | VETO 권한 시스템 | `AGENT_Teams.mdc` |
+| **Devil's Advocate** (중세 교회) | 소수 의견 보호 | `agent-teams.md` |
+
+### 새로 리서치하여 추가한 기능
+
+| 기능 | 리서치 내용 | 적용 위치 |
+|------|-----------|----------|
+| **Checkpoint 시스템** | Git 기반 + 비Git 프로젝트 MD 기반 하이브리드 | `checkpoint.mdc`, `checkpoint-commands.md` |
+| **MCP 통합 가이드** | 15개 MCP 서버 설치/사용법, 활성화 전략 (6-7개 제한) | `mcp-command.md` |
+| **언어별 룰스** | 각 언어/프레임워크 공식 스타일 가이드 (Airbnb, PEP8, etc.) | `10-language/*.mdc` |
+| **스킬별 룰스** | 업계 베스트 프랙티스 (OWASP, Google Code Review, etc.) | `20-skills/*.mdc` |
+| **외부 평가 시스템** | BIG HAND(긍정)/GRIM REAPER(부정) 이중 평가 | `agent-external_evaluation.md` |
+
+### 언어별 룰스 리서치 출처
+
+| 언어 | 리서치 출처 |
+|------|-----------|
+| JavaScript | Airbnb Style Guide, ESLint 규칙 |
+| TypeScript | TypeScript 공식 문서, Microsoft 가이드 |
+| Python | PEP 8, Black 포매터, Google Python Style |
+| React JSX/TSX | React 공식 문서, Hooks Best Practices |
+
+### 스킬별 룰스 리서치 출처
+
+| 스킬 | 리서치 출처 |
+|------|-----------|
+| Security Audit | OWASP Top 10, 웹 보안 가이드라인 |
+| Code Review | Google Code Review Developer Guide |
+| TDD Workflow | Kent Beck - Test Driven Development |
+| API Design | REST API Best Practices, OpenAPI Spec |
+| Performance | Google Lighthouse, Web Vitals |
+
+---
+
 ## 📋 폴더 구조
 
 ```
