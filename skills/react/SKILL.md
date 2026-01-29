@@ -1,3 +1,8 @@
+---
+name: react
+description: React 컴포넌트 작성 모범 사례. React 컴포넌트, 훅 사용, 상태 관리, JSX/TSX 파일 작성 시 적용.
+---
+
 # React 규칙
 
 React 컴포넌트 작성 시 적용되는 모범 사례입니다. `.jsx`, `.tsx` 파일에서 사용하세요.

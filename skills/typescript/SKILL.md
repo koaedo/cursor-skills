@@ -1,3 +1,8 @@
+---
+name: typescript
+description: TypeScript 파일 작성 모범 사례. TypeScript 코드 작성, 타입 정의, 인터페이스, 제네릭 사용 시 적용.
+---
+
 # TypeScript 규칙
 
 TypeScript 파일 작성 시 적용되는 모범 사례입니다. `.ts` 파일에서 사용하세요.

@@ -1,3 +1,8 @@
+---
+name: performance-optimization
+description: 웹 애플리케이션 성능 최적화. Core Web Vitals, 번들 사이즈 최적화, 렌더링 성능 개선, 성능 튜닝 시 사용.
+---
+
 # Performance Optimization Skill
 
 웹 애플리케이션 성능 최적화 가이드

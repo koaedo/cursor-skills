@@ -1,3 +1,8 @@
+---
+name: context-compress
+description: 컨텍스트 압축 및 토큰 절약. 대화 압축, 요약, compress, 긴 대화 정리, 토큰 절약 요청 시 사용.
+---
+
 # Context Compress Skill
 
 컨텍스트 압축 - 토큰 절약 및 효율적 대화 관리

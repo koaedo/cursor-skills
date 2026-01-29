@@ -1,3 +1,8 @@
+---
+name: frontend-design
+description: 프론트엔드 컴포넌트 설계 및 구조화 가이드. 프론트엔드 구조 설계, 컴포넌트 아키텍처, 상태 관리 전략, 스타일링 전략 시 사용.
+---
+
 # Frontend Design Skill
 
 프론트엔드 컴포넌트 설계 및 구조화 가이드

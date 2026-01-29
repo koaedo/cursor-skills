@@ -1,3 +1,8 @@
+---
+name: debugging-workflow
+description: 체계적인 디버깅 워크플로우. 버그 해결, 에러 원인 파악, 디버깅, 문제 해결 요청 시 사용.
+---
+
 # Debugging Workflow Skill
 
 체계적인 디버깅 워크플로우 가이드

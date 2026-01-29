@@ -1,3 +1,8 @@
+---
+name: graphql
+description: GraphQL 스키마 및 쿼리 모범 사례. GraphQL 스키마 정의, 쿼리/뮤테이션 작성, resolver 구현 시 사용.
+---
+
 # GraphQL 규칙
 
 GraphQL 스키마 및 쿼리 작성 시 적용되는 모범 사례입니다.

@@ -1,3 +1,8 @@
+---
+name: react-best-practices
+description: React 성능 최적화 패턴 (Vercel 검증). React 성능 최적화, 워터폴 제거, Server Components, 번들 최적화 시 사용.
+---
+
 # React Best Practices Skill
 
 Vercel의 10년+ React 경험에서 검증된 성능 최적화 패턴

@@ -1,3 +1,8 @@
+---
+name: php
+description: PHP 파일 작성 모범 사례. PHP 코드 작성, PSR-12 스타일, Laravel/Symfony 패턴 사용 시 적용.
+---
+
 # PHP 규칙
 
 PHP 파일 작성 시 적용되는 모범 사례입니다. `.php` 파일에서 사용하세요.

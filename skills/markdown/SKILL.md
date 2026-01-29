@@ -1,3 +1,8 @@
+---
+name: markdown
+description: Markdown 문서 작성 모범 사례. MD 파일 작성, 문서 포맷팅, README 구조화, 마크다운 문법 사용 시 적용.
+---
+
 # Markdown 규칙
 
 Markdown 문서 작성 시 적용되는 모범 사례입니다.

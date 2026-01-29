@@ -1,3 +1,8 @@
+---
+name: session-management
+description: 세션 관리 및 대화 컨텍스트 유지. 세션 저장, 작업 이어하기, resume, 컨텍스트 유지 요청 시 사용.
+---
+
 # Session Management Skill
 
 세션 관리 - 대화 컨텍스트 유지 및 이어하기 지원

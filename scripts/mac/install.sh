@@ -14,7 +14,7 @@ set -e
 # ============================================
 CURSOR_DIR="$HOME/.cursor"
 COMMANDS_DIR="$CURSOR_DIR/_COMMAND_LIBRARY"
-SKILLS_DIR="$CURSOR_DIR/skills-cursor"
+SKILLS_DIR="$CURSOR_DIR/skills"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 

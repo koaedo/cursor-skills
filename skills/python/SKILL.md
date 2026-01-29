@@ -1,3 +1,8 @@
+---
+name: python
+description: Python 파일 작성 모범 사례. Python 코드 작성, PEP 8 스타일, 타입 힌트, 패키지 구조화 시 적용.
+---
+
 # Python 규칙
 
 Python 파일 작성 시 적용되는 모범 사례입니다. `.py` 파일에서 사용하세요.

@@ -1,3 +1,8 @@
+---
+name: bash-shell
+description: Bash 스크립트 작성 모범 사례. 쉘 스크립트 작성, bash 파일 생성, 자동화 스크립트 구현 시 사용.
+---
+
 # Bash/Shell 규칙
 
 Bash 스크립트 작성 시 적용되는 모범 사례입니다.

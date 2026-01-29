@@ -1,3 +1,8 @@
+---
+name: api-design
+description: RESTful API 설계 및 모범 사례 가이드. API 엔드포인트 설계, REST API 구현, 응답 형식 정의, 페이지네이션/필터링/정렬 구현 시 사용.
+---
+
 # API Design Skill
 
 RESTful API 설계 및 모범 사례 가이드

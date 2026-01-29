@@ -1,3 +1,8 @@
+---
+name: nextjs
+description: Next.js 애플리케이션 모범 사례. Next.js App Router, 서버 컴포넌트, 라우팅, SSR/SSG 구현 시 사용.
+---
+
 # Next.js 규칙
 
 Next.js 애플리케이션 작성 시 적용되는 모범 사례입니다. App Router (Next.js 13+) 기준입니다.

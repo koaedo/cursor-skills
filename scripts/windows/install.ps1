@@ -19,7 +19,7 @@ param(
 $ErrorActionPreference = "Stop"
 $CURSOR_DIR = "$env:USERPROFILE\.cursor"
 $COMMANDS_DIR = "$CURSOR_DIR\_COMMAND_LIBRARY"
-$SKILLS_DIR = "$CURSOR_DIR\skills-cursor"
+$SKILLS_DIR = "$CURSOR_DIR\skills"
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ROOT_DIR = (Resolve-Path "$SCRIPT_DIR\..\..").Path
 

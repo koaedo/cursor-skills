@@ -1,3 +1,8 @@
+---
+name: docker
+description: Dockerfile 및 Docker Compose 모범 사례. Docker 이미지 빌드, 컨테이너 설정, docker-compose 작성 시 사용.
+---
+
 # Docker 규칙
 
 Dockerfile 및 Docker Compose 작성 시 적용되는 모범 사례입니다.

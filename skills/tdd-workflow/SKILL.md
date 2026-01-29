@@ -1,3 +1,8 @@
+---
+name: tdd-workflow
+description: 테스트 주도 개발(TDD) 워크플로우. TDD 개발, 테스트 먼저 작성, Red-Green-Refactor 사이클 요청 시 사용.
+---
+
 # TDD Workflow Skill
 
 테스트 주도 개발(Test-Driven Development) 워크플로우입니다. "TDD로 개발해줘", "테스트 먼저 작성해줘" 등의 요청 시 사용하세요.

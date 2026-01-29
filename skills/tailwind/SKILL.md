@@ -1,3 +1,8 @@
+---
+name: tailwind
+description: Tailwind CSS 사용 모범 사례. Tailwind 클래스 사용, 유틸리티 조합, 반응형 디자인, 커스텀 설정 시 적용.
+---
+
 # Tailwind CSS 규칙
 
 Tailwind CSS 사용 시 적용되는 모범 사례입니다.

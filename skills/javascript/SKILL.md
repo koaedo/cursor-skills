@@ -1,3 +1,8 @@
+---
+name: javascript
+description: JavaScript 파일 작성 모범 사례. JS 파일 작성, ES6+ 문법, 비동기 처리, 모듈 패턴 사용 시 적용.
+---
+
 # JavaScript 규칙
 
 JavaScript 파일 작성 시 적용되는 모범 사례입니다. `.js`, `.mjs`, `.cjs` 파일에서 사용하세요.

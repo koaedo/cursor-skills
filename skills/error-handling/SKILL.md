@@ -1,3 +1,8 @@
+---
+name: error-handling
+description: 견고한 에러 처리 패턴 가이드. 에러 처리 로직, 커스텀 에러 클래스, API 에러 핸들링, Error Boundary 구현 시 사용.
+---
+
 # Error Handling Skill
 
 견고한 에러 처리 패턴 가이드

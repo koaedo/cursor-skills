@@ -1,3 +1,8 @@
+---
+name: web-design-guidelines
+description: UI/UX 규칙과 WCAG 접근성 가이드라인. UI/UX 디자인, 접근성 구현, 반응형 디자인, 스타일 시스템 구축 시 사용.
+---
+
 # Web Design Guidelines Skill
 
 Vercel 기반 100+ UI/UX 규칙과 WCAG 접근성 가이드라인

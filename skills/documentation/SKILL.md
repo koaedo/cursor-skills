@@ -1,3 +1,8 @@
+---
+name: documentation
+description: 코드 및 프로젝트 문서화 가이드. README 작성, API 문서화, CHANGELOG, 코드 주석, 문서 작성 시 사용.
+---
+
 # Documentation Skill
 
 코드 및 프로젝트 문서화 가이드

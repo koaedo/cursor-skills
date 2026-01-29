@@ -1,3 +1,8 @@
+---
+name: git-workflow
+description: Git 브랜치 전략 및 협업 워크플로우. 브랜치 전략, 커밋 메시지, PR 생성, Git 협업 요청 시 사용.
+---
+
 # Git Workflow Skill
 
 Git 브랜치 전략 및 협업 워크플로우 가이드

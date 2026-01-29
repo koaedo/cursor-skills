@@ -39,7 +39,7 @@ Cursor AI는 기본적으로 범용적인 응답을 합니다. 하지만 다음�
 │                                                              │
 │  3. Skills (스킬)                                            │
 │     → 특정 작업을 위한 전문 가이드                           │
-│     → ~/.cursor/skills-cursor/에 자동 설치                  │
+│     → ~/.cursor/skills/에 자동 설치                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -344,7 +344,7 @@ AI가 여러 역할(팀)로 분리되어 협업합니다.
 | `session-management` | 세션 상태 관리 | "세션 정리해줘" |
 | `context-compress` | 토큰 절약, 컨텍스트 압축 | "대화 압축해줘" |
 
-**저장 위치:** `~/.cursor/skills-cursor/`
+**저장 위치:** `~/.cursor/skills/`
 
 ---
 
@@ -412,7 +412,7 @@ Meredith Belbin의 9가지 팀 역할 이론. 팀 내 다양한 역할(조정자
 Cursor의 Settings > Rules는 UI에서만 접근 가능합니다. 파일로 직접 접근할 수 없어서 수동 복사가 필요합니다.
 
 ### Q: 스킬이 Settings > Skills에 안 보여요
-정상입니다. `~/.cursor/skills-cursor/`에 설치된 스킬은 "Agent Skills"로, Settings UI가 아닌 시스템 프롬프트에 자동 포함됩니다.
+정상입니다. `~/.cursor/skills/`에 설치된 스킬은 "Agent Skills"로, Settings UI가 아닌 시스템 프롬프트에 자동 포함됩니다. 각 SKILL.md 파일에는 YAML frontmatter가 필요합니다.
 
 ### Q: 기존 설정이 있는데 덮어써도 되나요?
 `-Skip` 옵션으로 기존 파일을 유지하거나, 기본 모드에서 파일별로 선택할 수 있습니다.

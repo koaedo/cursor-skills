@@ -1,3 +1,8 @@
+---
+name: css-scss
+description: CSS 및 SCSS 스타일시트 모범 사례. CSS 파일 작성, SCSS 스타일링, 스타일 구조화, BEM 네이밍 시 사용.
+---
+
 # CSS/SCSS 규칙
 
 CSS 및 SCSS 스타일시트 작성 시 적용되는 모범 사례입니다.

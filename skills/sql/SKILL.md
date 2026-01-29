@@ -1,3 +1,8 @@
+---
+name: sql
+description: SQL 쿼리 작성 모범 사례. SQL 쿼리 작성, 데이터베이스 스키마 설계, MySQL/PostgreSQL 작업 시 적용.
+---
+
 # SQL 규칙
 
 SQL 쿼리 작성 시 적용되는 모범 사례입니다. 주로 MySQL/PostgreSQL 기준입니다.
