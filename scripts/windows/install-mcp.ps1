@@ -8,9 +8,9 @@
 #   - Optional API-key MCPs with -All flag
 #
 # Usage:
-#   .\windows_mcp_install.ps1              # Essential MCPs only
-#   .\windows_mcp_install.ps1 -All         # All MCPs (API keys needed)
-#   .\windows_mcp_install.ps1 -List        # Show installed MCPs
+#   .\scripts\windows\install-mcp.ps1              # Essential MCPs only
+#   .\scripts\windows\install-mcp.ps1 -All         # All MCPs (API keys needed)
+#   .\scripts\windows\install-mcp.ps1 -List        # Show installed MCPs
 #
 # ============================================================
 
@@ -372,9 +372,9 @@ if ($All) {
 } else {
     Write-Host ""
     Write-Color "[*] To install recommended MCPs:" "White"
-    Write-Color "   .\windows_mcp_install.ps1 -All" "Gray"
+    Write-Color "   .\scripts\windows\install-mcp.ps1 -All" "Gray"
 }
 
 Write-Host ""
-Write-Color "[*] Guide: _COMMAND_LIBRARY/mcp-command.md" "Gray"
+Write-Color "[*] Guide: commands/mcp-command.md" "Gray"
 Write-Host ""

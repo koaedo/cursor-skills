@@ -1,10 +1,10 @@
 # Cursor Skills & Commands Installer for Windows
 # Usage:
-#   .\windows_install.ps1                    # 기본: 파일별로 물어봄
-#   .\windows_install.ps1 -Force             # 모두 덮어쓰기
-#   .\windows_install.ps1 -Skip              # 기존 파일 모두 건너뛰기
-#   .\windows_install.ps1 -SkipCommands      # 커맨드 설치 건너뛰기
-#   .\windows_install.ps1 -SkipSkills        # 스킬 설치 건너뛰기
+#   .\scripts\windows\install.ps1                    # 기본: 파일별로 물어봄
+#   .\scripts\windows\install.ps1 -Force             # 모두 덮어쓰기
+#   .\scripts\windows\install.ps1 -Skip              # 기존 파일 모두 건너뛰기
+#   .\scripts\windows\install.ps1 -SkipCommands      # 커맨드 설치 건너뛰기
+#   .\scripts\windows\install.ps1 -SkipSkills        # 스킬 설치 건너뛰기
 
 param(
     [switch]$SkipCommands,  # 커맨드 설치 건너뛰기
@@ -21,6 +21,7 @@ $CURSOR_DIR = "$env:USERPROFILE\.cursor"
 $COMMANDS_DIR = "$CURSOR_DIR\_COMMAND_LIBRARY"
 $SKILLS_DIR = "$CURSOR_DIR\skills-cursor"
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ROOT_DIR = (Resolve-Path "$SCRIPT_DIR\..\..").Path
 
 # ============================================
 # Helper Functions
@@ -71,8 +72,8 @@ function Get-UserChoice {
 Write-Header
 
 # Check source directories exist
-$sourceCommands = Join-Path $SCRIPT_DIR "commands"
-$sourceSkills = Join-Path $SCRIPT_DIR "skills"
+$sourceCommands = Join-Path $ROOT_DIR "commands"
+$sourceSkills = Join-Path $ROOT_DIR "skills"
 
 if (-not $SkipCommands -and -not (Test-Path $sourceCommands)) {
     Write-Color "[!] Commands folder not found: $sourceCommands" "Red"
@@ -196,5 +197,5 @@ Write-Color "    -SkipCommands  : Skip command installation" "White"
 Write-Color "    -SkipSkills    : Skip skills installation" "White"
 Write-Host ""
 
-Write-Color "[i] To install MCPs, run: .\windows_mcp_install.ps1" "Cyan"
+Write-Color "[i] To install MCPs, run: .\scripts\windows\install-mcp.ps1" "Cyan"
 Write-Host ""

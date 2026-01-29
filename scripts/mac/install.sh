@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Cursor Skills & Commands Installer for Mac/Linux
-# This script installs Command Library and Skills to ~/.cursor/
+# Usage:
+#   ./scripts/mac/install.sh                    # 기본: 파일별로 물어봄
+#   ./scripts/mac/install.sh --force            # 모두 덮어쓰기
+#   ./scripts/mac/install.sh --skip-commands    # 커맨드 설치 건너뛰기
+#   ./scripts/mac/install.sh --skip-skills      # 스킬 설치 건너뛰기
 
 set -e
 
@@ -12,6 +16,7 @@ CURSOR_DIR="$HOME/.cursor"
 COMMANDS_DIR="$CURSOR_DIR/_COMMAND_LIBRARY"
 SKILLS_DIR="$CURSOR_DIR/skills-cursor"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Colors
 RED='\033[0;31m'
@@ -75,8 +80,8 @@ done
 print_header
 
 # Check source directories exist
-SOURCE_COMMANDS="$SCRIPT_DIR/commands"
-SOURCE_SKILLS="$SCRIPT_DIR/skills"
+SOURCE_COMMANDS="$ROOT_DIR/commands"
+SOURCE_SKILLS="$ROOT_DIR/skills"
 
 if [ ! -d "$SOURCE_COMMANDS" ]; then
     print_color "[!] Commands folder not found: $SOURCE_COMMANDS" "$RED"
@@ -167,5 +172,5 @@ echo "    2. Copy the entire content"
 echo "    3. Paste into: Cursor Settings > Rules"
 echo ""
 
-print_color "[i] To install MCPs, run: ./mac_mcp_install.sh" "$CYAN"
+print_color "[i] To install MCPs, run: ./scripts/mac/install-mcp.sh" "$CYAN"
 echo ""

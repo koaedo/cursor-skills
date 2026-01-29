@@ -73,14 +73,17 @@ cursor-skills/
 │
 ├── _archive/                # 이전 버전 백업
 │
-├── windows_install.ps1      # Windows 전체 설치
-├── mac_install.sh           # Mac/Linux 전체 설치
-├── install-commands.ps1     # Windows 커맨드만 설치
-├── install-commands.sh      # Mac/Linux 커맨드만 설치
-├── install-skills.ps1       # Windows 스킬만 설치
-├── install-skills.sh        # Mac/Linux 스킬만 설치
-├── windows_mcp_install.ps1  # Windows MCP 설치
-└── mac_mcp_install.sh       # Mac/Linux MCP 설치
+└── scripts/                 # 설치 스크립트
+    ├── windows/             # Windows용
+    │   ├── install.ps1          # 전체 설치
+    │   ├── install-commands.ps1 # 커맨드만 설치
+    │   ├── install-skills.ps1   # 스킬만 설치
+    │   └── install-mcp.ps1      # MCP 설치
+    └── mac/                 # Mac/Linux용
+        ├── install.sh           # 전체 설치
+        ├── install-commands.sh  # 커맨드만 설치
+        ├── install-skills.sh    # 스킬만 설치
+        └── install-mcp.sh       # MCP 설치
 ```
 
 ---
@@ -99,23 +102,22 @@ cd cursor-skills
 **Windows (PowerShell):**
 ```powershell
 # 전체 설치 (커맨드 + 스킬)
-.\windows_install.ps1
+.\scripts\windows\install.ps1
 
 # 또는 개별 설치
-.\install-commands.ps1    # 커맨드만
-.\install-skills.ps1      # 스킬만
+.\scripts\windows\install-commands.ps1    # 커맨드만
+.\scripts\windows\install-skills.ps1      # 스킬만
 ```
 
 **Mac/Linux (Terminal):**
 ```bash
 # 전체 설치 (커맨드 + 스킬)
-chmod +x mac_install.sh
-./mac_install.sh
+chmod +x scripts/mac/*.sh
+./scripts/mac/install.sh
 
 # 또는 개별 설치
-chmod +x install-commands.sh install-skills.sh
-./install-commands.sh     # 커맨드만
-./install-skills.sh       # 스킬만
+./scripts/mac/install-commands.sh     # 커맨드만
+./scripts/mac/install-skills.sh       # 스킬만
 ```
 
 **설치 옵션:**
@@ -145,10 +147,10 @@ MCP(Model Context Protocol)는 AI에게 외부 도구를 연결해주는 기능�
 
 ```powershell
 # Windows
-.\windows_mcp_install.ps1
+.\scripts\windows\install-mcp.ps1
 
 # Mac/Linux
-./mac_mcp_install.sh
+./scripts/mac/install-mcp.sh
 ```
 
 ---
@@ -370,8 +372,8 @@ git clone https://github.com/yourusername/cursor-skills.git
 cd cursor-skills
 
 # 2. 커맨드 & 스킬 설치
-.\windows_install.ps1      # Windows
-./mac_install.sh           # Mac/Linux
+.\scripts\windows\install.ps1      # Windows
+./scripts/mac/install.sh           # Mac/Linux
 
 # 3. 유저룰스 설정 (수동)
 # user-rules/_combined.md 내용을
@@ -380,8 +382,8 @@ cd cursor-skills
 # 4. Cursor 재시작
 
 # 5. (선택) MCP 설치
-.\windows_mcp_install.ps1  # Windows
-./mac_mcp_install.sh       # Mac/Linux
+.\scripts\windows\install-mcp.ps1  # Windows
+./scripts/mac/install-mcp.sh       # Mac/Linux
 ```
 
 ---
@@ -416,7 +418,7 @@ Cursor의 Settings > Rules는 UI에서만 접근 가능합니다. 파일로 직�
 `-Skip` 옵션으로 기존 파일을 유지하거나, 기본 모드에서 파일별로 선택할 수 있습니다.
 
 ### Q: 특정 스킬만 설치하고 싶어요
-`install-skills.ps1`/`install-skills.sh` 실행 후, 각 스킬별로 `O`(덮어쓰기) 또는 `S`(건너뛰기)를 선택하세요.
+`scripts/windows/install-skills.ps1` 또는 `scripts/mac/install-skills.sh` 실행 후, 각 스킬별로 `O`(덮어쓰기) 또는 `S`(건너뛰기)를 선택하세요.
 
 ---
 

@@ -1,8 +1,8 @@
 # Cursor Skills Installer for Windows
 # Usage:
-#   .\install-skills.ps1           # 기본: 스킬별로 물어봄
-#   .\install-skills.ps1 -Force    # 모두 덮어쓰기
-#   .\install-skills.ps1 -Skip     # 기존 스킬 모두 건너뛰기
+#   .\scripts\windows\install-skills.ps1           # 기본: 스킬별로 물어봄
+#   .\scripts\windows\install-skills.ps1 -Force    # 모두 덮어쓰기
+#   .\scripts\windows\install-skills.ps1 -Skip     # 기존 스킬 모두 건너뛰기
 
 param(
     [switch]$Force,     # 기존 스킬 모두 덮어쓰기
@@ -16,6 +16,7 @@ $ErrorActionPreference = "Stop"
 $CURSOR_DIR = "$env:USERPROFILE\.cursor"
 $SKILLS_DIR = "$CURSOR_DIR\skills-cursor"
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ROOT_DIR = (Resolve-Path "$SCRIPT_DIR\..\..").Path
 
 # ============================================
 # Helper Functions
@@ -66,7 +67,7 @@ function Get-UserChoice {
 Write-Header
 
 # Check source directory exists
-$sourceSkills = Join-Path $SCRIPT_DIR "skills"
+$sourceSkills = Join-Path $ROOT_DIR "skills"
 
 if (-not (Test-Path $sourceSkills)) {
     Write-Color "[!] Skills folder not found: $sourceSkills" "Red"

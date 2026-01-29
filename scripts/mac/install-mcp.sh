@@ -9,9 +9,9 @@
 #   - Optional API-key MCPs with --all flag
 #
 # Usage:
-#   ./mac_mcp_install.sh              # Essential MCPs only
-#   ./mac_mcp_install.sh --all        # All MCPs (API keys needed)
-#   ./mac_mcp_install.sh --list       # Show installed MCPs
+#   ./scripts/mac/install-mcp.sh              # Essential MCPs only
+#   ./scripts/mac/install-mcp.sh --all        # All MCPs (API keys needed)
+#   ./scripts/mac/install-mcp.sh --list       # Show installed MCPs
 #
 # ============================================================
 
@@ -298,9 +298,9 @@ if [ "$ALL" = true ]; then
 else
     echo ""
     echo -e "[*] To install recommended MCPs:"
-    echo -e "   ${GRAY}./mac_mcp_install.sh --all${NC}"
+    echo -e "   ${GRAY}./scripts/mac/install-mcp.sh --all${NC}"
 fi
 
 echo ""
-echo -e "${GRAY}[*] Guide: _COMMAND_LIBRARY/mcp-command.md${NC}"
+echo -e "${GRAY}[*] Guide: commands/mcp-command.md${NC}"
 echo ""

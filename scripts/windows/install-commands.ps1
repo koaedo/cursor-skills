@@ -1,8 +1,8 @@
 # Cursor Command Library Installer for Windows
 # Usage:
-#   .\install-commands.ps1           # 기본: 파일별로 물어봄
-#   .\install-commands.ps1 -Force    # 모두 덮어쓰기
-#   .\install-commands.ps1 -Skip     # 기존 파일 모두 건너뛰기
+#   .\scripts\windows\install-commands.ps1           # 기본: 파일별로 물어봄
+#   .\scripts\windows\install-commands.ps1 -Force    # 모두 덮어쓰기
+#   .\scripts\windows\install-commands.ps1 -Skip     # 기존 파일 모두 건너뛰기
 
 param(
     [switch]$Force,     # 기존 파일 모두 덮어쓰기
@@ -16,6 +16,7 @@ $ErrorActionPreference = "Stop"
 $CURSOR_DIR = "$env:USERPROFILE\.cursor"
 $COMMANDS_DIR = "$CURSOR_DIR\_COMMAND_LIBRARY"
 $SCRIPT_DIR = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ROOT_DIR = (Resolve-Path "$SCRIPT_DIR\..\..").Path
 
 # ============================================
 # Helper Functions
@@ -66,7 +67,7 @@ function Get-UserChoice {
 Write-Header
 
 # Check source directory exists
-$sourceCommands = Join-Path $SCRIPT_DIR "commands"
+$sourceCommands = Join-Path $ROOT_DIR "commands"
 
 if (-not (Test-Path $sourceCommands)) {
     Write-Color "[!] Commands folder not found: $sourceCommands" "Red"

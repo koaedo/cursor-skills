@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Cursor Skills Installer for Mac/Linux
+# Cursor Command Library Installer for Mac/Linux
 # Usage:
-#   ./install-skills.sh           # 기본: 스킬별로 물어봄
-#   ./install-skills.sh --force   # 모두 덮어쓰기
-#   ./install-skills.sh --skip    # 기존 스킬 모두 건너뛰기
+#   ./scripts/mac/install-commands.sh           # 기본: 파일별로 물어봄
+#   ./scripts/mac/install-commands.sh --force   # 모두 덮어쓰기
+#   ./scripts/mac/install-commands.sh --skip    # 기존 파일 모두 건너뛰기
 
 set -e
 
@@ -12,8 +12,9 @@ set -e
 # Configuration
 # ============================================
 CURSOR_DIR="$HOME/.cursor"
-SKILLS_DIR="$CURSOR_DIR/skills-cursor"
+COMMANDS_DIR="$CURSOR_DIR/_COMMAND_LIBRARY"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # Colors
 RED='\033[0;31m'
@@ -37,7 +38,7 @@ print_color() {
 print_header() {
     echo ""
     print_color "============================================" "$CYAN"
-    print_color "  Cursor Skills Installer" "$CYAN"
+    print_color "  Cursor Command Library Installer" "$CYAN"
     print_color "============================================" "$CYAN"
     echo ""
 }
@@ -50,12 +51,12 @@ ensure_directory() {
 }
 
 get_user_choice() {
-    local skillname="$1"
+    local filename="$1"
     
     if [ "$FORCE" = true ]; then echo "overwrite"; return; fi
     if [ "$SKIP" = true ]; then echo "skip"; return; fi
     
-    print_color "[?] Skill '$skillname' already exists. What to do?" "$YELLOW"
+    print_color "[?] '$filename' already exists. What to do?" "$YELLOW"
     echo "    [O] Overwrite  [S] Skip  [A] Overwrite All  [N] Skip All"
     read -p "    Choice (O/S/A/N): " -n 1 -r
     echo
@@ -94,47 +95,45 @@ done
 print_header
 
 # Check source directory exists
-SOURCE_SKILLS="$SCRIPT_DIR/skills"
+SOURCE_COMMANDS="$ROOT_DIR/commands"
 
-if [ ! -d "$SOURCE_SKILLS" ]; then
-    print_color "[!] Skills folder not found: $SOURCE_SKILLS" "$RED"
+if [ ! -d "$SOURCE_COMMANDS" ]; then
+    print_color "[!] Commands folder not found: $SOURCE_COMMANDS" "$RED"
     print_color "[i] Make sure you're running this from the repository root" "$YELLOW"
     exit 1
 fi
 
 # Ensure directories exist
 ensure_directory "$CURSOR_DIR"
-ensure_directory "$SKILLS_DIR"
+ensure_directory "$COMMANDS_DIR"
 
-# Install skills
-print_color "[*] Installing Skills..." "$YELLOW"
-print_color "[i] Source: $SOURCE_SKILLS" "$CYAN"
-print_color "[i] Target: $SKILLS_DIR" "$CYAN"
+# Install command files
+print_color "[*] Installing Command Library..." "$YELLOW"
+print_color "[i] Source: $SOURCE_COMMANDS" "$CYAN"
+print_color "[i] Target: $COMMANDS_DIR" "$CYAN"
 echo ""
 
 INSTALLED_COUNT=0
 SKIPPED_COUNT=0
 
-for skill_dir in "$SOURCE_SKILLS"/*/; do
-    [ -d "$skill_dir" ] || continue
+for file in "$SOURCE_COMMANDS"/*.md; do
+    [ -e "$file" ] || continue
     
-    skill_name=$(basename "$skill_dir")
-    target_path="$SKILLS_DIR/$skill_name"
+    filename=$(basename "$file")
+    target_path="$COMMANDS_DIR/$filename"
     
-    if [ -d "$target_path" ]; then
-        choice=$(get_user_choice "$skill_name")
+    if [ -f "$target_path" ]; then
+        choice=$(get_user_choice "$filename")
         
         if [ "$choice" = "skip" ]; then
-            print_color "[-] Skipped: $skill_name" "$GRAY"
+            print_color "[-] Skipped: $filename" "$GRAY"
             ((SKIPPED_COUNT++)) || true
             continue
         fi
-        
-        rm -rf "$target_path"
     fi
     
-    cp -r "$skill_dir" "$target_path"
-    print_color "[+] Installed: $skill_name" "$GREEN"
+    cp "$file" "$target_path"
+    print_color "[+] Installed: $filename" "$GREEN"
     ((INSTALLED_COUNT++)) || true
 done
 
@@ -148,20 +147,12 @@ print_color "============================================" "$CYAN"
 echo ""
 
 print_color "[i] Summary:" "$YELLOW"
-print_color "    Installed: $INSTALLED_COUNT skills" "$GREEN"
-print_color "    Skipped:   $SKIPPED_COUNT skills" "$GRAY"
-echo "    Location:  $SKILLS_DIR"
-echo ""
-
-# List installed skills
-print_color "[i] Installed skills:" "$CYAN"
-for skill in "$SKILLS_DIR"/*/; do
-    [ -d "$skill" ] || continue
-    echo "    - $(basename "$skill")"
-done
+print_color "    Installed: $INSTALLED_COUNT files" "$GREEN"
+print_color "    Skipped:   $SKIPPED_COUNT files" "$GRAY"
+echo "    Location:  $COMMANDS_DIR"
 echo ""
 
 print_color "[i] Usage options:" "$CYAN"
-echo "    --force, -f  : Overwrite all existing skills"
-echo "    --skip, -s   : Skip all existing skills"
+echo "    --force, -f  : Overwrite all existing files"
+echo "    --skip, -s   : Skip all existing files"
 echo ""
